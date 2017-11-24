@@ -126,6 +126,20 @@ namespace Chavp.Math.Tests.Models
             return t;
         }
 
+        public static bool operator !=(Matrix c1, Matrix c2)
+        {
+            return !(c1 == c2);
+        }
+
+        public static bool operator ==(Matrix c1, Matrix c2)
+        {
+            for (int i = 0; i < c1.Size.Item1; i++)
+            {
+                if (c1[i] != c2[i]) return false;
+            }
+            return true;
+        }
+
         public Vector this[int i]
         {
             get

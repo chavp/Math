@@ -218,5 +218,44 @@ namespace Chavp.Math.Tests
 
             Console.WriteLine("DIF_M_SQ = {0}", ~DIF_M * DIF_M);
         }
+
+        [TestMethod]
+        public void are_Equals()
+        {
+            var A = new Matrix
+            {
+                Elements = new List<Vector>
+                {
+                    new Vector(-1, 0, 3),
+                    new Vector(11, 5, 2),
+                    new Vector(6, 12, -6)
+                }
+            };
+
+            var B = new Matrix
+            {
+                Elements = new List<Vector>
+                {
+                    new Vector(-1, 1, 3),
+                    new Vector(11, 5, 2),
+                    new Vector(6, 12, -6)
+                }
+            };
+
+            var C = new Matrix
+            {
+                Elements = new List<Vector>
+                {
+                    new Vector(-1, 0, 3),
+                    new Vector(11, 5, 2),
+                    new Vector(6, 12, -6)
+                }
+            };
+
+            Assert.IsFalse(A == B);
+            Assert.IsTrue(A != B);
+            Assert.IsTrue(A == C);
+        }
+
     }
 }
