@@ -60,15 +60,59 @@ namespace Chavp.Math.Tests
             var v1 = new Vector(-6, 8);
             var v2 = new Vector(5, 12);
 
-            var dot = v1.Dot(v2);
-            var m1 = v1.Magnitude();
-            var m2 = v2.Magnitude();
-            Console.WriteLine("COS(x) = {0}", dot / (m1 * m2) );
-            double mycalcInRadians = System.Math.Acos(dot / (m1 * m2));
+            double mycalcInRadians = v1.Radians(v2);
             double mycalcInDegrees = (mycalcInRadians * 180 / System.Math.PI);
             Console.WriteLine("COS(-1)(x) = {0}", mycalcInDegrees);
+        }
 
-            
+        [TestMethod]
+        public void diag()
+        {
+            var v = new Vector(1, 2, 3);
+            var m = v.Diag();
+
+            Assert.AreEqual(new Matrix(
+                new Vector(1, 0, 0),
+                new Vector(0, 2, 0),
+                new Vector(0, 0, 3)), m);
+        }
+
+        [TestMethod]
+        public void revdiag()
+        {
+            var v = new Vector(1, 2, 3);
+            var m = v.Revdiag();
+
+            Assert.AreEqual(new Matrix(
+                new Vector(0, 0, 1),
+                new Vector(0, 2, 0),
+                new Vector(3, 0, 0)), m);
+        }
+
+        [TestMethod]
+        public void and_or()
+        {
+            var v = new Vector(1, 0, 1);
+            var v2 = new Vector(0, 1, 1);
+
+            Assert.AreEqual(new Vector(0, 0, 1), v & v2);
+            Assert.AreEqual(new Vector(1, 1, 1), v | v2);
+        }
+
+        [TestMethod]
+        public void unitVector()
+        {
+            var v1 = new Vector(6, 8);
+            var uv = v1.Unit();
+            Assert.AreEqual(1, uv.Magnitude());
+        }
+
+        [TestMethod]
+        public void shadow()
+        {
+            var v1 = new Vector(3, 8);
+            var v2 = new Vector(5, 0);
+            Console.WriteLine(v1.Shadow(v2));
         }
     }
 }

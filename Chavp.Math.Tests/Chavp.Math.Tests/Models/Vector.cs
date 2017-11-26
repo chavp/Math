@@ -18,6 +18,7 @@ namespace Chavp.Math.Tests.Models
         {
             get
             {
+                if (X == null) return 0;
                 return X.Count;
             }
         }
@@ -28,6 +29,36 @@ namespace Chavp.Math.Tests.Models
             for (int i = 0; i < c1.Dim; i++)
             {
                 list[i] = (c1[i] + c2[i]);
+            }
+            return new Vector(list);
+        }
+
+        public static Vector operator *(Vector c1, Vector c2)
+        {
+            var list = new double?[c1.Dim];
+            for (int i = 0; i < c1.Dim; i++)
+            {
+                list[i] = (c1[i] * c2[i]);
+            }
+            return new Vector(list);
+        }
+
+        public static Vector operator &(Vector c1, Vector c2)
+        {
+            var list = new double?[c1.Dim];
+            for (int i = 0; i < c1.Dim; i++)
+            {
+                list[i] = ( ((c1[i] > 0)? 1:0) & ((c2[i] > 0) ? 1 : 0) );
+            }
+            return new Vector(list);
+        }
+
+        public static Vector operator |(Vector c1, Vector c2)
+        {
+            var list = new double?[c1.Dim];
+            for (int i = 0; i < c1.Dim; i++)
+            {
+                list[i] = (((c1[i] > 0) ? 1 : 0) | ((c2[i] > 0) ? 1 : 0));
             }
             return new Vector(list);
         }
@@ -102,14 +133,20 @@ namespace Chavp.Math.Tests.Models
             return System.Math.Pow(pow_2.Sum(), 0.5);
         }
 
+        public Vector Unit()
+        {
+            return this * (1 / this.Magnitude());
+        }
+
         public Vector Cross(Vector c)
         {
             if (c.Dim != 3) throw new Exception("Not 3D");
 
-            var m1 = new Matrix();
-            m1.Elements.Add(new Vector(1, 1, 1));
-            m1.Elements.Add(this);
-            m1.Elements.Add(c);
+            var m1 = new Matrix(
+                new Vector(1, 1, 1),
+                this,
+                c
+                );
 
             var x1 = m1.Submatrix(0, 0).Determinant();
             var x2 = m1.Submatrix(0, 1).Determinant();
@@ -123,9 +160,43 @@ namespace Chavp.Math.Tests.Models
             double dot = 0;
             for (int i = 0; i < c.X.Count; i++)
             {
-                dot += this[i].GetValueOrDefault() * c[i].GetValueOrDefault();
+                dot += this[i] * c[i];
             }
             return dot;
+        }
+
+        public double Radians(Vector c)
+        {
+            var dot = this.Dot(c);
+            var m1 = this.Magnitude();
+            var m2 = c.Magnitude();
+            return System.Math.Acos(dot / (m1 * m2));
+        }
+
+        public Vector Shadow(Vector c)
+        {
+            var a = this.Dot(c) / System.Math.Pow(c.Magnitude(), 2);
+            return a * c;
+        }
+
+        public Matrix Diag()
+        {
+            var result = Matrix.Create(this.Dim, this.Dim, 0);
+            for (int i = 0; i < this.Dim; i++)
+            {
+                result[i, i] = this[i];
+            }
+            return result;
+        }
+
+        public Matrix Revdiag()
+        {
+            var result = Matrix.Create(this.Dim, this.Dim, 0);
+            for (int i = 0; i < this.Dim; i++)
+            {
+                result[i, this.Dim - i - 1] = this[i];
+            }
+            return result;
         }
 
         public void Add(double? val)
@@ -143,6 +214,16 @@ namespace Chavp.Math.Tests.Models
             X.RemoveAt(index);
         }
 
+        public Vector Absolute()
+        {
+            Vector v = (Vector)this.MemberwiseClone();
+            for (int j = 0; j < this.X.Count; j++)
+            {
+                v[j] = System.Math.Abs(this[j]);
+            }
+            return v;
+        }
+
         public double?[] Values
         {
             get
@@ -151,16 +232,27 @@ namespace Chavp.Math.Tests.Models
             }
         }
 
-        public double? this[int i]
+        public double this[int i]
         {
             get
             {
-                return X[i];
+                return X[i].GetValueOrDefault();
             }
             set
             {
                 X[i] = value;
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            var b = (Vector)obj;
+            return this == b;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.ToString().GetHashCode();
         }
     }
 
