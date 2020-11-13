@@ -48,6 +48,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphTests.cs" />
     <Compile Include="Models\Matrix.cs" />
     <Compile Include="Models\Vector.cs" />
     <Compile Include="MatrixTest.cs" />
